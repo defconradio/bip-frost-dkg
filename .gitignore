@@ -12,3 +12,6 @@ wheels/
 # Coverage data
 .coverage
 htmlcov/
+
+#personal
+*.scp

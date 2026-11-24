@@ -18,22 +18,25 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v4
+        uses: actions/checkout@v7
 
-      - name: Set up Python 3.12
-        uses: actions/setup-python@v5
+      - name: Set up Python
+        uses: actions/setup-python@v7
         with:
           python-version: "3.12"
+          cache: "pip"
+          cache-dependency-path: "requirements-dev.txt"
 
-      - name: Install test dependencies
-        run: |
-          python -m pip install --upgrade pip
-          pip install pytest
+      - name: Install dependencies
+        run: pip install -r requirements-dev.txt
 
-      - name: Run repository checks and tests
+      - name: Lint and typecheck new examples and tests
         run: |
-          if [ -f "./all.sh" ]; then
-            chmod +x ./all.sh
-            ./all.sh
-          fi
-          pytest
+          ruff check python/examples/ python/tests/
+          ruff format --check python/examples/ python/tests/
+          MYPYPATH=python:python/secp256k1lab/src mypy --config-file python/mypy.ini python/examples/ python/tests/
+
+      - name: Run Alice, Bob, Peter example and tests
+        run: |
+          python3 python/examples/alice_bob_peter_dkg.py
+          pytest -v
