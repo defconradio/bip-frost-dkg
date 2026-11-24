@@ -1,0 +1,41 @@
+name: Validate ChillDKG
+
+on:
+  pull_request:
+    branches: [master]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: ${{ github.workflow }}-${{ github.head_ref || github.run_id }}
+  cancel-in-progress: true
+
+jobs:
+  validate-chilldkg:
+    name: validate-chilldkg
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v7
+
+      - name: Set up Python
+        uses: actions/setup-python@v7
+        with:
+          python-version: "3.12"
+
+      - name: Install dependencies
+        run: |
+          pip install pytest ruff mypy
+
+      - name: Lint and typecheck new examples and tests
+        run: |
+          ruff check python/examples/ python/tests/
+          mypy python/examples/ python/tests/
+
+      - name: Run Alice, Bob, Peter example and pytest suite
+        run: |
+          python3 python/examples/alice_bob_peter_dkg.py
+          pytest -v
+
