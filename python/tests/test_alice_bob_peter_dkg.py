@@ -37,7 +37,10 @@ def test_example_script_exits_with_status_zero():
         check=False,
     )
     assert result.returncode == 0, f"Script failed with stderr:\n{result.stderr}"
-    assert "All Alice, Bob, and Peter ChillDKG scenarios completed successfully!" in result.stdout
+    assert (
+        "All Alice, Bob, and Peter ChillDKG scenarios completed successfully!"
+        in result.stdout
+    )
 
 
 def test_alice_bob_peter_ceremony_and_recovery():

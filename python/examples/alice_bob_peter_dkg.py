@@ -80,7 +80,9 @@ def run_happy_path_ceremony(names, host_seckeys, params):
         )
         p_states2.append(state2)
         p_msgs2.append(pmsg2)
-        print(f"  [Step 2] {name} verified shares & signed transcript ({len(pmsg2)} bytes)")
+        print(
+            f"  [Step 2] {name} verified shares & signed transcript ({len(pmsg2)} bytes)"
+        )
 
     # Coordinator builds the success certificate
     cmsg2, coord_thresh_info, coord_recovery_data = coordinator_finalize(
@@ -96,7 +98,9 @@ def run_happy_path_ceremony(names, host_seckeys, params):
             cmsg2=cmsg2,
         )
         results.append((secshare, thresh_info, recovery_data))
-        print(f"  [Final]  {name} derived secret share & threshold pubkey: {thresh_info.thresh_pk.hex()}")
+        print(
+            f"  [Final]  {name} derived secret share & threshold pubkey: {thresh_info.thresh_pk.hex()}"
+        )
 
     # Verify all participants and coordinator agree on threshold_info and recovery_data
     assert all(r[1] == coord_thresh_info for r in results)
@@ -117,7 +121,9 @@ def run_happy_path_ceremony(names, host_seckeys, params):
         params=params,
         ack_sigs=ack_sigs,
     )
-    print("  [Verified] All 3 participants acknowledged recovery data. Safe to fund wallet!")
+    print(
+        "  [Verified] All 3 participants acknowledged recovery data. Safe to fund wallet!"
+    )
     return results, coord_recovery_data
 
 
@@ -141,12 +147,16 @@ def run_peter_recovery_scenario(peter_seckey, expected_result, recovery_data):
 
 def run_blame_investigation_scenario(names, host_seckeys, params):
     """Scenario 3: Peter sends a corrupted encrypted share; Alice detects & blames Peter."""
-    print("\n--- Scenario 3: Faulty Participant Detection & Blame (Peter Corrupts Share) ---")
+    print(
+        "\n--- Scenario 3: Faulty Participant Detection & Blame (Peter Corrupts Share) ---"
+    )
 
     p_states1 = []
     p_msgs1 = []
     for sk in host_seckeys:
-        state1, pmsg1 = participant_step1(hostseckey=sk, params=params, random=os.urandom(32))
+        state1, pmsg1 = participant_step1(
+            hostseckey=sk, params=params, random=os.urandom(32)
+        )
         p_states1.append(state1)
         p_msgs1.append(pmsg1)
 
@@ -176,7 +186,9 @@ def run_blame_investigation_scenario(names, host_seckeys, params):
             participant_investigate(error=err, cinv=cinvs[0])
         except FaultyParticipantOrCoordinatorError as blame_err:
             suspected_name = names[blame_err.participant_id]
-            print(f"  [Blame] Alice pinpointed faulty participant ID {blame_err.participant_id}: {suspected_name}!")
+            print(
+                f"  [Blame] Alice pinpointed faulty participant ID {blame_err.participant_id}: {suspected_name}!"
+            )
             assert suspected_name == "Peter"
 
 
@@ -194,4 +206,3 @@ def main():
 
 if __name__ == "__main__":
     main()
-
