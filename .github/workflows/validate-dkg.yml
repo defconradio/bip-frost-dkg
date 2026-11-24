@@ -34,7 +34,7 @@ jobs:
         run: |
           ruff check python/examples/ python/tests/
           ruff format --check python/examples/ python/tests/
-          MYPYPATH=python mypy python/examples/ python/tests/
+          MYPYPATH=python:python/secp256k1lab/src mypy --config-file python/mypy.ini python/examples/ python/tests/
 
       - name: Run Alice, Bob, Peter example and tests
         run: |

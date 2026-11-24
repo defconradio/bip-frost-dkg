@@ -52,14 +52,14 @@ class TestAliceBobPeterDKG(unittest.TestCase):
         results, recovery_data = run_happy_path_ceremony(names, host_seckeys, params)
 
         # All 3 participants must derive distinct 32-byte secret shares
-        secret_shares = [r for r in results]
+        secret_shares = [r[0] for r in results]
         self.assertEqual(len(set(secret_shares)), 3)
         self.assertTrue(all(len(share) == 32 for share in secret_shares))
 
         # Peter (index 2) recovers identical outputs from hostseckey + recovery_data
         run_peter_recovery_scenario(
-            peter_seckey=host_seckeys,
-            expected_result=results,
+            peter_seckey=host_seckeys[2],
+            expected_result=results[2],
             recovery_data=recovery_data,
         )
 
